@@ -84,7 +84,6 @@ namespace vroom.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-       // [HttpPost]
         public IActionResult Delete(int id)
         {
             var models = _db.Models.Find(id);
