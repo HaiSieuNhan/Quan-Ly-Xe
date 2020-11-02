@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using vroom.Helpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,20 +18,26 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                     </li>
+                    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Masters
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-controller="Make" asp-action="Index">Makes</a>
+                                <a class="dropdown-item" asp-controller="Model" asp-action="Index">Models</a>
+                                <a class="dropdown-item" asp-controller="Bike" asp-action="Index">Bikes</a>
+                                @if (User.IsInRole(Roles.Admin))
+                                {
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Add User</a>
+                                }
+                            </div>
+                        </li>
+                    }
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Masters
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" asp-controller="Make" asp-action="Index">Makes</a>
-                            <a class="dropdown-item"  asp-controller="Model" asp-action="Index">Models</a>
-
-                        </div>
-                    </li>
-                    
                 </ul>
-                
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>

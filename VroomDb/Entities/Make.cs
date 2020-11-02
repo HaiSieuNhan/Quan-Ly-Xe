@@ -12,5 +12,6 @@ namespace VroomDb.Entities
         [StringLength(255)]
         public string Name { get; set; }
         public ICollection<Model> Models { get; set; }
+
     }
 }

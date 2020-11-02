@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VroomDb.Entities;
 
 namespace vroom.Controllers.Models
 {
@@ -11,5 +12,6 @@ namespace vroom.Controllers.Models
         public string Name { get; set; }
         public string MakeName { get; set; }
         public int MakeId { get; set; }
+        public IEnumerable<Make> Makes { get; set; }
     }
 }

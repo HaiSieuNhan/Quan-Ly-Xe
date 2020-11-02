@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vroom.Controllers.Models;
+using vroom.Helpers;
 using vroom.Views.ViewModels;
 using VroomDb;
 using VroomDb.Entities;
 
 namespace vroom.Controllers
 {
+    [Authorize(Roles = Roles.Admin + "," + Roles.Executive)]
     public class ModelController : Controller
     {
         private readonly VroomDbContext _db;
@@ -62,22 +65,24 @@ namespace vroom.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-
+        [HttpGet]
         public IActionResult Edit(int id)
         {
-            ModelVM.Model = _db.Models.Include(m => m.Make).SingleOrDefault(m => m.Id == id);
-            if (ModelVM.Model == null) {
+            //ModelVM.Model = _db.Models.Include(m => m.Make).SingleOrDefault(m => m.Id == id);
+            ModelVM.Model = _db.Models.Find(id);
+            if (ModelVM.Model == null)
+            {
                 return NotFound();
-             }
+            }
             return View(ModelVM);
+
         }
-        [HttpPost,ActionName("Edit")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditPost(int id)
+        public IActionResult Edit()
         {
             if (!ModelState.IsValid)
             {
-
                 return View(ModelVM);
             }
             _db.Update(ModelVM.Model);
