@@ -42,6 +42,10 @@ namespace vroom
                 .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddControllers(options => options.EnableEndpointRouting = false);
+            services.AddControllersWithViews()
+                    .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                       );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +65,7 @@ namespace vroom
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();
-            
+
             //app.UseAuthorization();
 
             app.UseMvc(routes =>

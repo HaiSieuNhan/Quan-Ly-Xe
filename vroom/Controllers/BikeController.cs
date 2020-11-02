@@ -46,48 +46,32 @@ namespace vroom.Controllers
             return View(BikeVM);
         }
 
-        //[HttpPost, ActionName("Create")]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult CreateBike()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(BikeVM);
-        //    }
-        //    _db.Bikes.Add(BikeVM.Bike);
-
-        //    UploadImageIfAvailable();
-
-        //    _db.SaveChanges();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
+        
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
         public IActionResult CreateBike(Bike bike)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                ///
-                string wwwRootPath = _hostingEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(bike.ImageFile.FileName);
-                string extension = Path.GetExtension(bike.ImageFile.FileName);
-                bike.ImageName = fileName = fileName + extension;
-
-                string path = Path.Combine(wwwRootPath + "/images/Bike/", fileName);
-
-                using (var fileStream = new FileStream(path, FileMode.Create))
-                {
-                    bike.ImageFile.CopyTo(fileStream);
-                }
-                ///
-                _db.Bikes.Add(bike);
-               //UploadImageIfAvailable(bike);
-                _db.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                BikeVM.Makes = _db.Makes.ToList();
+                BikeVM.Models = _db.Models.ToList();
+                return View(BikeVM);
             }
-            
-            return View(bike);
+            ///upload images
+            string wwwRootPath = _hostingEnvironment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(bike.ImageFile.FileName);
+            string extension = Path.GetExtension(bike.ImageFile.FileName);
+            bike.ImageName = fileName = fileName + extension;
+            string path = Path.Combine(wwwRootPath + "/images/Bike/", fileName);
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                bike.ImageFile.CopyTo(fileStream);
+            }
+            ///
+            _db.Bikes.Add(bike);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         private void UploadImageIfAvailable(Bike bike)
