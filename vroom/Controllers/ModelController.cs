@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vroom.Controllers.Models;
+using vroom.Controllers.Resources;
 using vroom.Helpers;
 using vroom.Views.ViewModels;
 using VroomDb;
@@ -99,6 +100,27 @@ namespace vroom.Controllers
             _db.Models.Remove(models);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+
+        [AllowAnonymous]
+        [HttpGet("api/models/{MakeID}")]
+        public IEnumerable<Model> Models(int MakeID)
+        {
+            return _db.Models.ToList()
+                    .Where(m=>m.MakeID == MakeID);
+        }
+        [AllowAnonymous]
+        [HttpGet("api/models")]
+        public IEnumerable<ModelResources> Models()
+        {
+            //return _db.Models.ToList();
+            var models =  _db.Models.ToList();
+            var modelResources = models.Select(m => new ModelResources
+            {
+                Id = m.Id,
+                Name = m.Name
+            }).ToList();
+            return modelResources;
         }
     }
 }

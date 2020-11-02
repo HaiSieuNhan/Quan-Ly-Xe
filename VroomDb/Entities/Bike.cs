@@ -13,14 +13,17 @@ namespace VroomDb.Entities
 
         public int Id { get; set; }
         public Make Make { get; set; }
+        [RegularExpression("^[1-9]*$",ErrorMessage ="Select Makes")]
         public int MakeID { get; set; }
 
         public Model Model { get; set; }
+        [RegularExpression("^[1-9]*$", ErrorMessage = "Select Models")]
+
         public int ModelID { get; set; }
        
 
         [Required(ErrorMessage = "Provide Year")]
-
+        [Range(2000,2029,ErrorMessage ="Invalid Year Or Year >= 2000 && <= 2020")]
         public int Year { get; set; }
 
         [Required(ErrorMessage = "Enter Mileage")]

@@ -5,6 +5,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script>
+    $(document).ready(function () {
+        var MakeDDL = $('#Make');
+        var ModelDDL = $('#Model');
+        ModelDDL.prop('disabled', true);
+        MakeDDL.change(function () {
+            if ($(this).val() == "0") {
+                ModelDDL.prop('disabled', true);
+                ModelDDL.val("0");
+            }
+            else {
+                $.ajax({
+                    url: "/api/models/" + $(this).val(),
+                    method: "get",
+                    success: function (data) {
+                        console.log("Success");
+                        ModelDDL.prop('disabled', false);
+                        ModelDDL.empty();
+                        ModelDDL.append($('<option/>', { value: '0', text: '--- Select Model---' }));
+                        $(data).each(function (index, item) {
+                            ModelDDL.append($('<option/>', { value: item.Id, text: item.name }))
+                        });
+                    }
+                });
+            }
+        })
+    });
+</script>
 <br />
 <h2 class="text-info">Add Bike</h2>
 <form method="post" enctype="multipart/form-data" asp-action="Create">
@@ -16,12 +44,7 @@
             <select asp-for="Bike.MakeID" asp-items="Model.Makes.ToSelectListItem()" class="form-control" id="Make"></select>
             <span asp-validation-for="Bike.MakeID" class="text-danger"></span>
         </div>
-        @*<div class="col-auto">
-            <label asp-for="Bike.ImageName"></label>
-        </div>
-        <div class="col-3">
-            <input type="file" name="files"/>
-        </div>*@
+
         <div class="form-group">
             <label asp-for="Bike.ImageFile" class="control-label"></label>
             <input asp-for="Bike.ImageFile" accept="images/*" />
