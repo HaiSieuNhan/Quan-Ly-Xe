@@ -13,9 +13,7 @@
     <div class="col-6">
         <h2 class="text-info">Bikes</h2>
     </div>
-    <div class="col-6 text-right">
-        <a class="btn btn-info" asp-action="Create"><i class="fas fa-motorcycle"></i> &nbsp; Add New Bikes</a>
-    </div>
+   
     <br />
     <div class="col-12">
         <table class="table table-striped border">
@@ -33,7 +31,9 @@
                     Seller Information
                 </th>
 
-                <th></th>
+                <th>
+                    <a class="btn btn-info text-right" asp-action="Create"><i class="fas fa-motorcycle"></i> &nbsp; Add New Bikes</a>
+                </th>
             </tr>
             @foreach (var item in Model)
             {

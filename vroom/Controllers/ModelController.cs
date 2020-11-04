@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,14 @@ namespace vroom.Controllers
     public class ModelController : Controller
     {
         private readonly VroomDbContext _db;
+        private readonly IMapper _mapper;
+
         [BindProperty]
         public ModelViewModel ModelVM { get; set; }
-        public ModelController(VroomDbContext db)
+        public ModelController(VroomDbContext db,IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
             ModelVM = new ModelViewModel()
             {
                 Makes = _db.Makes.ToList(),
@@ -113,14 +117,8 @@ namespace vroom.Controllers
         [HttpGet("api/models")]
         public IEnumerable<ModelResources> Models()
         {
-            //return _db.Models.ToList();
             var models =  _db.Models.ToList();
-            var modelResources = models.Select(m => new ModelResources
-            {
-                Id = m.Id,
-                Name = m.Name
-            }).ToList();
-            return modelResources;
+             return _mapper.Map<List<Model>, List<ModelResources>>(models);
         }
     }
 }
