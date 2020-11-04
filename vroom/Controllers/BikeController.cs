@@ -74,44 +74,6 @@ namespace vroom.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private void UploadImageIfAvailable(Bike bike)
-        {
-            //Get BikeID we have saved in database            
-            var BikeID = bike.Id;
-
-            //Get wwrootPath to save the file on server
-            string wwrootPath = _hostingEnvironment.WebRootPath;
-
-            //Get the Uploaded files
-            var files = HttpContext.Request.Form.Files;
-
-            //Get the reference of DBSet for the bike we have saved in our database
-            var SavedBike = _db.Bikes.Find(BikeID);
-
-
-            //Upload the file on server and save the path in database if user have submitted file
-            if (files.Count != 0)
-            {
-                //Extract the extension of submitted file
-                var Extension = Path.GetExtension(files[0].FileName);
-
-                //Create the relative image path to be saved in database table 
-                var RelativeImagePath = Image.BikeImagePath + files + Extension;
-
-                //Create absolute image path to upload the physical file on server
-                var AbsImagePath = Path.Combine(wwrootPath, RelativeImagePath);
-
-
-                //Upload the file on server using Absolute Path
-                using (var filestream = new FileStream(AbsImagePath, FileMode.Create))
-                {
-                    files[0].CopyTo(filestream);
-                }
-
-                //Set the path in database
-                SavedBike.ImageName = RelativeImagePath;
-            }
-        }
 
         //[HttpGet]
         //public IActionResult Edit(int id)
@@ -137,16 +99,22 @@ namespace vroom.Controllers
         //    _db.SaveChanges();
         //    return RedirectToAction(nameof(Index));
         //}
-        //public IActionResult Delete(int id)
-        //{
-        //    var models = _db.Models.Find(id);
-        //    if (models == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    _db.Models.Remove(models);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        
+        public IActionResult Delete(int id)
+        {
+            Bike Bike = _db.Bikes.Find(id);
+            if (Bike == null)
+            {
+                return NotFound();
+            }
+            var imagePath = Path.Combine(_hostingEnvironment.WebRootPath, "/images/Bike/", Bike.ImageName);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+            _db.Bikes.Remove(Bike);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

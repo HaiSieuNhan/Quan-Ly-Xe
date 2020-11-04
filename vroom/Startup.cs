@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VroomDb;
+using AutoMapper;
+using vroom.MappingProfile;
 
 namespace vroom
 {
@@ -35,6 +32,7 @@ namespace vroom
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddAutoMapper(typeof(MappingProfile.MappingProfile));
             services.AddDbContext<VroomDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<VroomDbContext>()
@@ -45,7 +43,8 @@ namespace vroom
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                       );
+                       ); 
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
