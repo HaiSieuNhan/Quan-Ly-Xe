@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vroom", "vroom\vroom.csproj", "{ACFD437E-5F3C-4C36-AEC2-19EC4052275B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vroom", "vroom\vroom.csproj", "{ACFD437E-5F3C-4C36-AEC2-19EC4052275B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VroomDb", "VroomDb\VroomDb.csproj", "{DD01D54D-A2A9-48FD-A45D-49228E36A5C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VroomDb", "VroomDb\VroomDb.csproj", "{DD01D54D-A2A9-48FD-A45D-49228E36A5C7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86223DDD-9A86-4689-938B-44A3703679B3}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.md = ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

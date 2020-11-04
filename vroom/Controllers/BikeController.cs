@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace vroom.Controllers
 {
-    [Authorize(Roles = Roles.Admin + "," + Roles.Executive)]
+    //[Authorize(Roles = Roles.Admin + "," + Roles.Executive)]
     public class BikeController : Controller
     {
         private readonly VroomDbContext _db;
@@ -35,6 +35,7 @@ namespace vroom.Controllers
             };
 
         }
+        [AllowAnonymous]
         public IActionResult Index(string searchSorting, string sortOrder, int pageNumber = 1, int pageSize = 2)
         {
             ViewBag.CurrentSortOrder = sortOrder;
@@ -167,6 +168,19 @@ namespace vroom.Controllers
             _db.Bikes.Remove(Bike);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult View(int id)
+        {
+            BikeVM.Bike = _db.Bikes.SingleOrDefault(b => b.Id == id);
+
+            if (BikeVM.Bike == null)
+            {
+                return NotFound();
+            }
+            return View(BikeVM);
         }
     }
 }
