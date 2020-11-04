@@ -1,5 +1,5 @@
 ﻿@model cloudscribe.Pagination.Models.PagedResult<VroomDb.Entities.Bike>
-
+@using vroom.Helpers
 
 @{
     ViewData["Title"] = "Index";
@@ -14,8 +14,8 @@
     <div>
         <p>
             Find Make: <input type="text" name="searchSorting" value="@ViewBag.CurrentFilter" />
-                       <input type="submit" value="Search" class="btn btn-info" /> | 
-                       <a asp-action="Index">Remove Filter</a>
+            <input type="submit" value="Search" class="btn btn-info" /> |
+            <a asp-action="Index">Remove Filter</a>
         </p>
     </div>
 </form>
@@ -23,9 +23,13 @@
     <div class="col-6">
         <h2 class="text-info">Bikes</h2>
     </div>
-    <div class="col-6 text-right">
-        <a class="btn btn-info" asp-action="Create"><i class="fas fa-motorcycle"></i> &nbsp; Add New Bike</a>
-    </div>
+    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+    {
+        <div class="col-6 text-right">
+            <a class="btn btn-info" asp-action="Create"><i class="fas fa-motorcycle"></i> &nbsp; Add New Bike</a>
+        </div>
+    }
+
     <br />
     <div class="col-12">
         <table class="table table-striped border">
@@ -37,8 +41,8 @@
                     Bike Details
                 </th>
                 <th>
-                    <a asp-action="Index" 
-                       asp-route-sortOrder="@ViewBag.PriceSortParam" 
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewBag.PriceSortParam"
                        asp-route.pageNumber="@Model.PageNumber">
                         Price
                     </a>
@@ -67,7 +71,16 @@
                         <b>Email: </b>@Html.DisplayFor(m => item.SellerEmail)<br />
                         <b>Phone: </b>@Html.DisplayFor(m => item.SellerPhone)
                     </td>
-                    <partial name="_TableButtonPartials" model="item.Id" />
+                    @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Executive))
+                    {
+                        <partial name="_TableButtonPartials" model="item.Id" />
+                    }
+                    else
+                    {
+                        <td class="text-right">
+                            <a type="button" class="btn btn-primary" asp-action="View" asp-route-id="@item.Id"><i class="fas fa-search-plus"></i></a>
+                        </td>
+                    }
                 </tr>
             }
 

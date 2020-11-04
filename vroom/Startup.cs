@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using VroomDb;
 using AutoMapper;
 using vroom.MappingProfile;
+using EcommerceWeb;
 
 namespace vroom
 {
@@ -61,6 +62,7 @@ namespace vroom
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.EnsureDatabaseIsSeeded(false);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
@@ -72,7 +74,7 @@ namespace vroom
             {
                 routes.MapRoute(
                   name: "default",
-                  template: "{controller=Home}/{action=Index}/{id?}"
+                  template: "{controller=Bike}/{action=Index}/{id?}"
               );
             });
         }
