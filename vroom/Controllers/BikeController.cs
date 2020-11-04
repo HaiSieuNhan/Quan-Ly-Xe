@@ -10,6 +10,7 @@ using vroom.Helpers;
 using vroom.Views.ViewModels;
 using VroomDb;
 using VroomDb.Entities;
+using cloudscribe.Pagination.Models;
 
 namespace vroom.Controllers
 {
@@ -34,12 +35,26 @@ namespace vroom.Controllers
 
         }
 
-        public IActionResult Index()
+        public IActionResult Index2()
         {
             var Bikes = _db.Bikes.Include(m => m.Make).Include(m => m.Model);
             return View(Bikes.ToList());
         }
-
+        public IActionResult Index(int pageNumber = 1, int pageSize = 1)
+        {
+            int ExcludeRecords = (pageNumber * pageSize) - pageSize;
+            var result = new PagedResult<Bike>
+            {
+                Data = _db.Bikes.Include(m => m.Make)
+                                 .Include(m => m.Model)
+                                 .Skip(ExcludeRecords)
+                                 .Take(pageSize).ToList(),
+                TotalItems = _db.Bikes.Count(),
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+            return View(result);
+        }
 
         public IActionResult Create()
         {
