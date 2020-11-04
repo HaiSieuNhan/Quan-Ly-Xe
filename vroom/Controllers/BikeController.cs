@@ -111,31 +111,47 @@ namespace vroom.Controllers
         }
 
 
-        //[HttpGet]
-        //public IActionResult Edit(int id)
-        //{
-        //    ModelVM.Model = _db.Models.Include(m => m.Make).SingleOrDefault(m => m.Id == id);
-        //    ModelVM.Model = _db.Models.Find(id);
-        //    if (ModelVM.Model == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(ModelVM);
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            BikeVM.Bike = _db.Bikes.SingleOrDefault(m => m.Id == id);
+            BikeVM.Models = _db.Models.Where(m => m.MakeID == BikeVM.Bike.MakeID);
+            if (BikeVM.Bike == null)
+            {
+                return NotFound();
+            }
+            return View(BikeVM);
 
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(ModelVM);
-        //    }
-        //    _db.Update(ModelVM.Model);
-        //    _db.SaveChanges();
-        //    return RedirectToAction(nameof(Index));
-        //}
-        
+        }
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditBike(Bike bike)
+        {
+            if (!ModelState.IsValid)
+            {
+                BikeVM.Makes = _db.Makes.ToList();
+                BikeVM.Models = _db.Models.ToList();
+                return View(BikeVM);
+            }
+            if (bike.ImageFile != null)
+            {
+                ///
+                string wwwRootPath = _hostingEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(bike.ImageFile.FileName);
+                string extension = Path.GetExtension(bike.ImageFile.FileName);
+                bike.ImageName = fileName = fileName + extension;
+                string path = Path.Combine(wwwRootPath + "/images/Bike/", fileName);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    bike.ImageFile.CopyTo(fileStream);
+                }
+            }
+            _db.Bikes.Update(bike);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Delete(int id)
         {
             Bike Bike = _db.Bikes.Find(id);

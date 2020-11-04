@@ -59,7 +59,7 @@ namespace VroomDb.Entities
         public string ImageName { get; set; }
 
         [NotMapped]
-        [Required]
+       // [Required]
         [DisplayName("Upload File")]
         public IFormFile ImageFile { get; set; }
 
