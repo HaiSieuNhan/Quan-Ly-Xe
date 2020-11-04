@@ -11,6 +11,7 @@ using vroom.Views.ViewModels;
 using VroomDb;
 using VroomDb.Entities;
 using cloudscribe.Pagination.Models;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace vroom.Controllers
 {
@@ -34,25 +35,45 @@ namespace vroom.Controllers
             };
 
         }
-
-        public IActionResult Index2()
+        public IActionResult Index(string searchSorting, string sortOrder, int pageNumber = 1, int pageSize = 2)
         {
-            var Bikes = _db.Bikes.Include(m => m.Make).Include(m => m.Model);
-            return View(Bikes.ToList());
-        }
-        public IActionResult Index(int pageNumber = 1, int pageSize = 1)
-        {
+            ViewBag.CurrentSortOrder = sortOrder;
+            ViewBag.CurrentFilter = searchSorting;
+            ViewBag.PriceSortParam = String.IsNullOrEmpty(sortOrder) ? "price_desc" :"";
             int ExcludeRecords = (pageNumber * pageSize) - pageSize;
+
+            var Bikes = from b in _db.Bikes.Include(m => m.Make)
+                                 .Include(m => m.Model) select b;
+            var BikeCount = Bikes.Count();
+            if (!String.IsNullOrEmpty(searchSorting))
+            {
+                Bikes = Bikes.Where(b => b.Make.Name.Contains(searchSorting));
+                BikeCount = Bikes.Count();
+            }
+            //sorting
+            switch (sortOrder)
+            {
+                case "price_desc":
+                    Bikes = Bikes.OrderByDescending(b => b.Price);
+                    break;
+                default:
+                    Bikes = Bikes.OrderBy(b => b.Price);
+                    break;
+            }
+            //paging
+            Bikes = Bikes
+             .Skip(ExcludeRecords)
+                 .Take(pageSize);
+
             var result = new PagedResult<Bike>
             {
-                Data = _db.Bikes.Include(m => m.Make)
-                                 .Include(m => m.Model)
-                                 .Skip(ExcludeRecords)
-                                 .Take(pageSize).ToList(),
-                TotalItems = _db.Bikes.Count(),
+                Data = Bikes.AsNoTracking().ToList(),
+                TotalItems = BikeCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
+
+
             return View(result);
         }
 
