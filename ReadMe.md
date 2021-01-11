@@ -1,4 +1,4 @@
-# ASP.NET Core 3.1 project from Dao Van Hai
+# ASP.NET Core 3.1 project from Dao Van Hai s
 ## Technologies
 - ASP.NET Core 3.1
 - Entity Framework Core 3.1
